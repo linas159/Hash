@@ -55,16 +55,42 @@ int main()
         binar.push_back(decToBinary((int)text[i]));
     }
     binar.push_back("10000000");
-
+    
     int multipleOf512=0;
-    while (binar.size() > multipleOf512)
+    while (binar.size()*8 > multipleOf512)
     {
         multipleOf512 += 512;
     }
 
-    for (int i = binar.size(); i < multipleOf512 - 64; i++)
+    for (int i = binar.size()*8; i < multipleOf512 - 64; i+=8)
     {
+        binar.push_back("00000000");
+    }
 
+    string bincount = decToBinary(text.length()*8);
+    int bcount = bincount.length();
+    for (int i = 0; i < 64 - bcount; i++)
+    {
+        bincount = "0" + bincount;
+    }
+    string temp = "";
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = i * 8; j < (i+1)*8; j++)
+        {
+            temp += bincount[j];
+        }
+        binar.push_back(temp);
+        temp = "";
+    }
+
+    for (int i = 0; i < binar.size(); i++)
+    {
+        cout << binar[i] << " ";
+        if ((i + 1) % 8 == 0)
+        {
+            cout << endl;
+        }
     }
 }
 
