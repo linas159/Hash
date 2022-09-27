@@ -129,6 +129,15 @@
   <ItemGroup>
     <ClCompile Include="Hash.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="1char1.txt" />
+    <Text Include="1char2.txt" />
+    <Text Include="daugNeRand1.txt" />
+    <Text Include="daugNeRand2.txt" />
+    <Text Include="daugRand1.txt" />
+    <Text Include="daugRand2.txt" />
+    <Text Include="empty.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
