@@ -91,6 +91,76 @@ string random_string(string::size_type length)
     return s;
 }
 
+string HexToBin(string hexdec)
+{
+    long int i = 0;
+    stringstream hs;
+    while (hexdec[i]) {
+
+        switch (hexdec[i]) {
+        case '0':
+            hs << "0000";
+            break;
+        case '1':
+            hs << "0001";
+            break;
+        case '2':
+            hs << "0010";
+            break;
+        case '3':
+            hs << "0011";
+            break;
+        case '4':
+            hs << "0100";
+            break;
+        case '5':
+            hs << "0101";
+            break;
+        case '6':
+            hs << "0110";
+            break;
+        case '7':
+            hs << "0111";
+            break;
+        case '8':
+            hs << "1000";
+            break;
+        case '9':
+            hs << "1001";
+            break;
+        case 'A':
+        case 'a':
+            hs << "1010";
+            break;
+        case 'B':
+        case 'b':
+            hs << "1011";
+            break;
+        case 'C':
+        case 'c':
+            hs << "1100";
+            break;
+        case 'D':
+        case 'd':
+            hs << "1101";
+            break;
+        case 'E':
+        case 'e':
+            hs << "1110";
+            break;
+        case 'F':
+        case 'f':
+            hs << "1111";
+            break;
+        default:
+            cout << "\nInvalid hexadecimal digit "
+                << hexdec[i];
+        }
+        i++;
+    }
+    return hs.str();
+}
+
 int main()
 {
     cout << "Ar norite irasyti ranka? Y/N";
@@ -103,7 +173,7 @@ int main()
         cin >> text;
         hashingSeed(hash, text);
         hashcode = to256bit(hash);
-        //cout << hashcode;
+        cout << hashcode;
     }
     else
     {
@@ -182,7 +252,7 @@ int main()
 
                     double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
                     cout << hashcode << endl;
-                    cout << k << " eiluciu uztruko: " << elapsed_time_ms<<endl;
+                    cout << k << " eiluciu uztruko: " << elapsed_time_ms << " ms" << endl;
                 }
             }
         }
@@ -281,7 +351,73 @@ int main()
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
+            ifstream in("100000poru2.txt");
+            string hashcode1;
+            int k = 0;
+            float hexMin = 100, hexMax = 0, hexAvg = 0, bitMin = 100, bitMax = 0, bitAvg = 0, perc;
+            for (int i = 0; i < 100000; i++)
+            {
+                in >> text;
+                hashingSeed(hash, text);
+                hashcode = to256bit(hash);
+                //cout << hashcode << " ";
+                in >> text;
+                hashingSeed(hash, text);
+                hashcode1 = to256bit(hash);
+                //cout << hashcode1 << endl;
+                for (int i = 0; i < 64; i++)
+                {
+                    if (hashcode[i] == hashcode1[i])
+                    {
+                        k++;
+                    }
+                }
+                perc = (float)k / 64 * 100;
+                //cout << perc << endl;
+                k = 0;
+                hexAvg += perc;
+                if (hexMin > perc)
+                {
+                    hexMin = perc;
+                }
+                if (hexMax < perc)
+                {
+                    hexMax = perc;
+                }
 
+                hashcode = HexToBin(hashcode);
+                hashcode1 = HexToBin(hashcode1);
+                for (int i = 0; i < hashcode.length(); i++)
+                {
+                    if (hashcode[i] == hashcode1[i])
+                    {
+                        k++;
+                    }
+                }
+                perc = (float)k / hashcode.length() * 100;
+                //cout << perc << endl;
+                k = 0;
+                bitAvg += perc;
+                if (bitMin > perc)
+                {
+                    bitMin = perc;
+                }
+                if (bitMax < perc)
+                {
+                    bitMax = perc;
+                }
+            }
+            hexAvg = hexAvg / 100000;
+            bitAvg = bitAvg / 100000;
+
+            cout << endl;
+            cout << "Minimumas Bitu lygmenyje: " << bitMin << endl;
+            cout << "Vidurkis Bitu lygmenyje: " << bitAvg << endl;
+            cout << "Maksimumas Bitu lygmenyje: " << bitMax << endl;
+            cout << endl;
+            cout << "Minimumas Hexu lygmenyje: " << hexMin << endl;
+            cout << "Vidurkis Hexu lygmenyje: " << hexAvg << endl;
+            cout << "Maksimumas Hexu lygmenyje: " << hexMax << endl;
         }
     }
 
