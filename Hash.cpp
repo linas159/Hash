@@ -17,6 +17,7 @@ string fromFile(string fileName)
 
 void hashingSeed(unsigned long long int& hash, string text)
 {
+    hash = 1;
     for (int i = 0; i < text.size(); i++)
     {
         hash += text[i]*(i+1)*(text[i]%31+1);
@@ -96,7 +97,7 @@ int main()
     char a;
     cin >> a;
     string text, hashcode;
-    unsigned long long int hash = 1;
+    unsigned long long int hash;
     if (a == 'y' || a == 'Y')
     {
         cin >> text;
@@ -209,6 +210,78 @@ int main()
                     out << random_string(1000)<<" "<< random_string(1000) << endl;
                 }
             }
+        }
+        cout << "Ar norite istirti 100000 poru panasuma? Y/N";
+        cin >> a;
+        if (a == 'y' || a == 'Y')
+        {
+            ifstream in("100000poru.txt");
+            string hashcode1;
+            int k = 0;
+            for (int i = 0; i < 100000; i++)
+            {
+                in >> text;
+                hashingSeed(hash, text);
+                hashcode = to256bit(hash);
+                cout << hashcode << " ";
+                in >> text;
+                hashingSeed(hash, text);
+                hashcode1 = to256bit(hash);
+                cout << hashcode1 << endl;
+                if (hashcode == hashcode1)
+                {
+                    k++;
+                }
+            }
+            cout << endl << "Hashas pasikartojo: " << k << " kartu" << endl;
+        }
+        cout << "Ar norite sugeneruoti 100000 poru kurios skiriasi tik vienu simboliu? Y/N";
+        cin >> a;
+        if (a == 'y' || a == 'Y')
+        {
+            ofstream out("100000poru2.txt");
+            string word;
+            for (int i = 0; i < 100000; i++)
+            {
+                if (i < 25000)
+                {
+                    word = random_string(10);
+                    word[0] = 'a';
+                    out << word << " ";
+                    word[0] = 'z';
+                    out << word << endl;
+                }
+                else if (i < 50000)
+                {
+                    word = random_string(100);
+                    word[0] = 'a';
+                    out << word << " ";
+                    word[0] = 'z';
+                    out << word << endl;
+                }
+                else if (i < 75000)
+                {
+                    word = random_string(500);
+                    word[0] = 'a';
+                    out << word << " ";
+                    word[0] = 'z';
+                    out << word << endl;
+                }
+                else
+                {
+                    word = random_string(1000);
+                    word[0] = 'a';
+                    out << word << " ";
+                    word[0] = 'z';
+                    out << word << endl;
+                }
+            }
+        }
+        cout << "Ar norite istirti 100000 poru skirtinguma procentiskai? Y/N";
+        cin >> a;
+        if (a == 'y' || a == 'Y')
+        {
+
         }
     }
 

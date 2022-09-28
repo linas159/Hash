@@ -131,6 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\Downloads\konstitucija.txt" />
+    <Text Include="100000poru.txt" />
+    <Text Include="100000poru2.txt" />
     <Text Include="1char1.txt" />
     <Text Include="1char2.txt" />
     <Text Include="daugNeRand1.txt" />
