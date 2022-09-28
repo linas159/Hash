@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <random>
+#include <chrono>
 
 using namespace std;
 
@@ -154,6 +155,60 @@ int main()
                 }
             }
             
+        }
+        cout << "Ar norite istirti hash funkcijos efektyvuma? Y/N";
+        cin >> a;
+        if (a == 'y' || a == 'Y')
+        {
+            ifstream in1("konstitucija.txt");
+            int k = 0, nextLine = 2;
+            stringstream text1;
+            string textLine;
+            while (!in1.eof())
+            {
+                k++;
+                getline(in1, textLine);
+                //cout << textLine<<endl;
+                text1 << textLine;
+                if (k == nextLine)
+                {
+                    nextLine *= 2;
+                    auto t_start = std::chrono::high_resolution_clock::now();
+                    //cout << text1.str() << endl;
+                    hashingSeed(hash, text1.str());
+                    hashcode = to256bit(hash);
+                    auto t_end = std::chrono::high_resolution_clock::now();
+
+                    double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+                    cout << hashcode << endl;
+                    cout << k << " eiluciu uztruko: " << elapsed_time_ms<<endl;
+                }
+            }
+        }
+        cout << "Ar norite sugeneruoti 100000 poru? Y/N";
+        cin >> a;
+        if (a == 'y' || a == 'Y')
+        {
+            ofstream out("100000poru.txt");
+            for (int i = 0; i < 100000; i++)
+            {
+                if (i < 25000)
+                {
+                    out << random_string(10)<<" "<< random_string(10)<<endl;
+                }
+                else if (i < 50000)
+                {
+                    out << random_string(100)<<" "<< random_string(100) << endl;
+                }
+                else if (i < 75000)
+                {
+                    out << random_string(500)<<" "<< random_string(500) << endl;
+                }
+                else
+                {
+                    out << random_string(1000)<<" "<< random_string(1000) << endl;
+                }
+            }
         }
     }
 

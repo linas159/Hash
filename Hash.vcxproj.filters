@@ -41,5 +41,8 @@
     <Text Include="empty.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\..\Downloads\konstitucija.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
