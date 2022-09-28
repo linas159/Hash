@@ -7,6 +7,9 @@
 
 using namespace std;
 
+char a;
+string text, hashcode;
+
 string fromFile(string fileName)
 {
     string text;
@@ -161,19 +164,255 @@ string HexToBin(string hexdec)
     return hs.str();
 }
 
+void byHand(unsigned long long int hash)
+{
+    cin >> text;
+    hashingSeed(hash, text);
+    hashcode = to256bit(hash);
+    cout << hashcode;
+}
+
+void fileGen()
+{
+    ofstream out("1char1.txt");
+    out << random_string(1);
+    out.close();
+    ofstream out1("1char2.txt");
+    out1 << random_string(1);
+    out1.close();
+    ofstream out2("daugRand1.txt");
+    out2 << random_string(1500);
+    out2.close();
+    ofstream out3("daugRand2.txt");
+    out3 << random_string(2000);
+    out3.close();
+
+    string s = random_string(2000);
+    s[1000] = 'a';
+    ofstream out4("daugNeRand1.txt");
+    out4 << s;
+    out4.close();
+    s[1000] = 'z';
+    ofstream out5("daugNeRand2.txt");
+    out5 << s;
+    out5.close();
+}
+
+void testTheFiles(unsigned long long int hash)
+{
+    while (1 > 0)
+    {
+        cout << "Iveskite failo pavadinima:";
+        string fileName;
+        cin >> fileName;
+        text = fromFile(fileName);
+        hashingSeed(hash, text);
+        hashcode = to256bit(hash);
+        cout << hashcode << endl;
+        cout << "Ar norite kartoti? Y/N" << endl;
+        cin >> a;
+        if (a == 'n' || a == 'N')
+        {
+            break;
+        }
+    }
+}
+
+void efect(unsigned long long int hash)
+{
+    ifstream in1("konstitucija.txt");
+    int k = 0, nextLine = 2;
+    stringstream text1;
+    string textLine;
+    while (!in1.eof())
+    {
+        k++;
+        getline(in1, textLine);
+        //cout << textLine<<endl;
+        text1 << textLine;
+        if (k == nextLine)
+        {
+            nextLine *= 2;
+            auto t_start = std::chrono::high_resolution_clock::now();
+            //cout << text1.str() << endl;
+            hashingSeed(hash, text1.str());
+            hashcode = to256bit(hash);
+            auto t_end = std::chrono::high_resolution_clock::now();
+
+            double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+            cout << hashcode << endl;
+            cout << k << " eiluciu uztruko: " << elapsed_time_ms << " ms" << endl;
+        }
+    }
+}
+
+void generatingPairs()
+{
+    ofstream out("100000poru.txt");
+    for (int i = 0; i < 100000; i++)
+    {
+        if (i < 25000)
+        {
+            out << random_string(10) << " " << random_string(10) << endl;
+        }
+        else if (i < 50000)
+        {
+            out << random_string(100) << " " << random_string(100) << endl;
+        }
+        else if (i < 75000)
+        {
+            out << random_string(500) << " " << random_string(500) << endl;
+        }
+        else
+        {
+            out << random_string(1000) << " " << random_string(1000) << endl;
+        }
+    }
+}
+
+void similarity(unsigned long long int hash)
+{
+    ifstream in("100000poru.txt");
+    string hashcode1;
+    int k = 0;
+    for (int i = 0; i < 100000; i++)
+    {
+        in >> text;
+        hashingSeed(hash, text);
+        hashcode = to256bit(hash);
+        cout << hashcode << " ";
+        in >> text;
+        hashingSeed(hash, text);
+        hashcode1 = to256bit(hash);
+        cout << hashcode1 << endl;
+        if (hashcode == hashcode1)
+        {
+            k++;
+        }
+    }
+    cout << endl << "Hashas pasikartojo: " << k << " kartu" << endl;
+}
+
+void generatingNotRandPairs()
+{
+    ofstream out("100000poru2.txt");
+    string word;
+    for (int i = 0; i < 100000; i++)
+    {
+        if (i < 25000)
+        {
+            word = random_string(10);
+            word[0] = 'a';
+            out << word << " ";
+            word[0] = 'z';
+            out << word << endl;
+        }
+        else if (i < 50000)
+        {
+            word = random_string(100);
+            word[0] = 'a';
+            out << word << " ";
+            word[0] = 'z';
+            out << word << endl;
+        }
+        else if (i < 75000)
+        {
+            word = random_string(500);
+            word[0] = 'a';
+            out << word << " ";
+            word[0] = 'z';
+            out << word << endl;
+        }
+        else
+        {
+            word = random_string(1000);
+            word[0] = 'a';
+            out << word << " ";
+            word[0] = 'z';
+            out << word << endl;
+        }
+    }
+}
+
+void differences(unsigned long long int hash)
+{
+    ifstream in("100000poru2.txt");
+    string hashcode1;
+    int k = 0;
+    float hexMin = 100, hexMax = 0, hexAvg = 0, bitMin = 100, bitMax = 0, bitAvg = 0, perc;
+    for (int i = 0; i < 100000; i++)
+    {
+        in >> text;
+        hashingSeed(hash, text);
+        hashcode = to256bit(hash);
+        //cout << hashcode << " ";
+        in >> text;
+        hashingSeed(hash, text);
+        hashcode1 = to256bit(hash);
+        //cout << hashcode1 << endl;
+        for (int i = 0; i < 64; i++)
+        {
+            if (hashcode[i] == hashcode1[i])
+            {
+                k++;
+            }
+        }
+        perc = (float)k / 64 * 100;
+        //cout << perc << endl;
+        k = 0;
+        hexAvg += perc;
+        if (hexMin > perc)
+        {
+            hexMin = perc;
+        }
+        if (hexMax < perc)
+        {
+            hexMax = perc;
+        }
+
+        hashcode = HexToBin(hashcode);
+        hashcode1 = HexToBin(hashcode1);
+        for (int i = 0; i < hashcode.length(); i++)
+        {
+            if (hashcode[i] == hashcode1[i])
+            {
+                k++;
+            }
+        }
+        perc = (float)k / hashcode.length() * 100;
+        //cout << perc << endl;
+        k = 0;
+        bitAvg += perc;
+        if (bitMin > perc)
+        {
+            bitMin = perc;
+        }
+        if (bitMax < perc)
+        {
+            bitMax = perc;
+        }
+    }
+    hexAvg = hexAvg / 100000;
+    bitAvg = bitAvg / 100000;
+
+    cout << endl;
+    cout << "Minimumas Bitu lygmenyje: " << bitMin << endl;
+    cout << "Vidurkis Bitu lygmenyje: " << bitAvg << endl;
+    cout << "Maksimumas Bitu lygmenyje: " << bitMax << endl;
+    cout << endl;
+    cout << "Minimumas Hexu lygmenyje: " << hexMin << endl;
+    cout << "Vidurkis Hexu lygmenyje: " << hexAvg << endl;
+    cout << "Maksimumas Hexu lygmenyje: " << hexMax << endl;
+}
+
 int main()
 {
     cout << "Ar norite irasyti ranka? Y/N";
-    char a;
     cin >> a;
-    string text, hashcode;
-    unsigned long long int hash;
+    unsigned long long int hash=1;
     if (a == 'y' || a == 'Y')
     {
-        cin >> text;
-        hashingSeed(hash, text);
-        hashcode = to256bit(hash);
-        cout << hashcode;
+        byHand(hash);
     }
     else
     {
@@ -181,243 +420,43 @@ int main()
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ofstream out ("1char1.txt");
-            out << random_string(1);
-            out.close();
-            ofstream out1("1char2.txt");
-            out1 << random_string(1);
-            out1.close();
-            ofstream out2("daugRand1.txt");
-            out2 << random_string(1500);
-            out2.close();
-            ofstream out3("daugRand2.txt");
-            out3 << random_string(2000); 
-            out3.close();
-
-            string s= random_string(2000);
-            s[1000] = 'a';
-            ofstream out4("daugNeRand1.txt");
-            out4 << s;
-            out4.close();
-            s[1000] = 'z';
-            ofstream out5("daugNeRand2.txt");
-            out5 << s;
-            out5.close();
-
+            fileGen();
         }
         cout << "Ar norite istestuoti failus? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            while (1 > 0)
-            {
-                cout << "Iveskite failo pavadinima:";
-                string fileName;
-                cin >> fileName;
-                text = fromFile(fileName);
-                hashingSeed(hash, text);
-                hashcode = to256bit(hash);
-                cout << hashcode << endl;
-                cout << "Ar norite kartoti? Y/N"<<endl;
-                cin >> a;
-                if (a == 'n' || a == 'N')
-                {
-                    break;
-                }
-            }
-            
+            testTheFiles(hash);
         }
         cout << "Ar norite istirti hash funkcijos efektyvuma? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ifstream in1("konstitucija.txt");
-            int k = 0, nextLine = 2;
-            stringstream text1;
-            string textLine;
-            while (!in1.eof())
-            {
-                k++;
-                getline(in1, textLine);
-                //cout << textLine<<endl;
-                text1 << textLine;
-                if (k == nextLine)
-                {
-                    nextLine *= 2;
-                    auto t_start = std::chrono::high_resolution_clock::now();
-                    //cout << text1.str() << endl;
-                    hashingSeed(hash, text1.str());
-                    hashcode = to256bit(hash);
-                    auto t_end = std::chrono::high_resolution_clock::now();
-
-                    double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-                    cout << hashcode << endl;
-                    cout << k << " eiluciu uztruko: " << elapsed_time_ms << " ms" << endl;
-                }
-            }
+            efect(hash);
         }
         cout << "Ar norite sugeneruoti 100000 poru? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ofstream out("100000poru.txt");
-            for (int i = 0; i < 100000; i++)
-            {
-                if (i < 25000)
-                {
-                    out << random_string(10)<<" "<< random_string(10)<<endl;
-                }
-                else if (i < 50000)
-                {
-                    out << random_string(100)<<" "<< random_string(100) << endl;
-                }
-                else if (i < 75000)
-                {
-                    out << random_string(500)<<" "<< random_string(500) << endl;
-                }
-                else
-                {
-                    out << random_string(1000)<<" "<< random_string(1000) << endl;
-                }
-            }
+            generatingPairs();
         }
         cout << "Ar norite istirti 100000 poru panasuma? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ifstream in("100000poru.txt");
-            string hashcode1;
-            int k = 0;
-            for (int i = 0; i < 100000; i++)
-            {
-                in >> text;
-                hashingSeed(hash, text);
-                hashcode = to256bit(hash);
-                cout << hashcode << " ";
-                in >> text;
-                hashingSeed(hash, text);
-                hashcode1 = to256bit(hash);
-                cout << hashcode1 << endl;
-                if (hashcode == hashcode1)
-                {
-                    k++;
-                }
-            }
-            cout << endl << "Hashas pasikartojo: " << k << " kartu" << endl;
+            similarity(hash);
         }
         cout << "Ar norite sugeneruoti 100000 poru kurios skiriasi tik vienu simboliu? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ofstream out("100000poru2.txt");
-            string word;
-            for (int i = 0; i < 100000; i++)
-            {
-                if (i < 25000)
-                {
-                    word = random_string(10);
-                    word[0] = 'a';
-                    out << word << " ";
-                    word[0] = 'z';
-                    out << word << endl;
-                }
-                else if (i < 50000)
-                {
-                    word = random_string(100);
-                    word[0] = 'a';
-                    out << word << " ";
-                    word[0] = 'z';
-                    out << word << endl;
-                }
-                else if (i < 75000)
-                {
-                    word = random_string(500);
-                    word[0] = 'a';
-                    out << word << " ";
-                    word[0] = 'z';
-                    out << word << endl;
-                }
-                else
-                {
-                    word = random_string(1000);
-                    word[0] = 'a';
-                    out << word << " ";
-                    word[0] = 'z';
-                    out << word << endl;
-                }
-            }
+            generatingNotRandPairs();
         }
         cout << "Ar norite istirti 100000 poru skirtinguma procentiskai? Y/N";
         cin >> a;
         if (a == 'y' || a == 'Y')
         {
-            ifstream in("100000poru2.txt");
-            string hashcode1;
-            int k = 0;
-            float hexMin = 100, hexMax = 0, hexAvg = 0, bitMin = 100, bitMax = 0, bitAvg = 0, perc;
-            for (int i = 0; i < 100000; i++)
-            {
-                in >> text;
-                hashingSeed(hash, text);
-                hashcode = to256bit(hash);
-                //cout << hashcode << " ";
-                in >> text;
-                hashingSeed(hash, text);
-                hashcode1 = to256bit(hash);
-                //cout << hashcode1 << endl;
-                for (int i = 0; i < 64; i++)
-                {
-                    if (hashcode[i] == hashcode1[i])
-                    {
-                        k++;
-                    }
-                }
-                perc = (float)k / 64 * 100;
-                //cout << perc << endl;
-                k = 0;
-                hexAvg += perc;
-                if (hexMin > perc)
-                {
-                    hexMin = perc;
-                }
-                if (hexMax < perc)
-                {
-                    hexMax = perc;
-                }
-
-                hashcode = HexToBin(hashcode);
-                hashcode1 = HexToBin(hashcode1);
-                for (int i = 0; i < hashcode.length(); i++)
-                {
-                    if (hashcode[i] == hashcode1[i])
-                    {
-                        k++;
-                    }
-                }
-                perc = (float)k / hashcode.length() * 100;
-                //cout << perc << endl;
-                k = 0;
-                bitAvg += perc;
-                if (bitMin > perc)
-                {
-                    bitMin = perc;
-                }
-                if (bitMax < perc)
-                {
-                    bitMax = perc;
-                }
-            }
-            hexAvg = hexAvg / 100000;
-            bitAvg = bitAvg / 100000;
-
-            cout << endl;
-            cout << "Minimumas Bitu lygmenyje: " << bitMin << endl;
-            cout << "Vidurkis Bitu lygmenyje: " << bitAvg << endl;
-            cout << "Maksimumas Bitu lygmenyje: " << bitMax << endl;
-            cout << endl;
-            cout << "Minimumas Hexu lygmenyje: " << hexMin << endl;
-            cout << "Vidurkis Hexu lygmenyje: " << hexAvg << endl;
-            cout << "Maksimumas Hexu lygmenyje: " << hexMax << endl;
+            differences(hash);
         }
     }
 
